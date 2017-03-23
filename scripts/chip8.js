@@ -246,7 +246,59 @@ class Chip8 {
 		var counter = this.stack.pop();
 
 		if (counter !== undefined) {
-			this.counters[0] = counter;
+			this.counters[1] = counter;
 		}
 	}
+
+	Opcode1NNN() { //1NNN - Jump To
+		this.counters[1] = (this.counters[0] & 0x0FFF);
+	}
+
+	Opcode2NNN() { //2NNN Save Position and Jump To
+		this.stack.push(this.counters[1]);
+		this.counters[1] = (this.counters[0] & 0x0FFF);		
+	}
+
+	Opcode3XNN() { //3XNN - Skip Next Instruction if Reg X = NN
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var nn = this.counters[0] & 0x00FF;
+
+		if (this.reg[x] == nn) {
+			this.counters[1] += 2;
+		}
+	}
+
+	Opcode4XNN() { //4XNN - Skip Next Instruction if Reg X != NN
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var nn = this.counters[0] & 0x00FF;
+
+		if (this.reg[x] != nn) {
+			this.counters[1] += 2;
+		}
+	}
+
+	Opcode5XY0() { //5XY0 - Skip Next Instruction if Reg X = Reg Y
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x0F00) >> 4;
+
+		if (this.reg[x] == this.reg[y]) {
+			this.counters[1] += 2;
+		}
+	}
+
+	Opcode6XNN() { //6XNN - Set Reg X = NN
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var nn = this.counters[0] & 0x00FF;
+
+		this.reg[x] = nn;
+	}
+
+	Opcode7XNN() { //7XNN - Add NN to Reg X
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var nn = this.counters[0] & 0x00FF;
+
+		this.reg[x] += nn;
+	}
+
+	
 }

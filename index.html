@@ -1,0 +1,26 @@
+<!doctype html>
+<head xmlns="http://www.w3.org/1999/html">
+	<title>Chip 8 Emulator</title>
+
+	<link href="./styles/main.css" rel="stylesheet" type="text/css">
+	<script src="./scripts/chip8Display.js"></script>
+	<script src="./scripts/chip8Sound.js"></script>
+	<script src="./scripts/chip8.js"></script>
+</head>
+    
+<body>
+	<h1>Chip 8 Emulator</h1>
+	<p>
+		Just a fun project to make a Chip 8 emulator using ES6...
+	</p>
+
+	<canvas></canvas> <!--For display use when get that far...-->
+
+    <script>
+    	window.onload = function() {
+    		var chip8 = new Chip8();
+    	};
+    </script>
+
+    </body>
+</html>

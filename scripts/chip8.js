@@ -33,7 +33,7 @@ class Chip8 {
 		console.log('Resetting Chip8');
 
 		this.memory = new Uint8Array(new ArrayBuffer(0xfff));
-		this.stack = new Uint16Array(new ArrayBuffer(0x20));
+		this.stack = new Array(16);
 		this.reg = new Uint8Array(new ArrayBuffer(0x10));
 		this.keyState = new Uint8Array(new ArrayBuffer(0x10));
 		this.counters = new Uint16Array(new ArrayBuffer(0x8)); //Holds opcode, progCounter, addrReg, and timer.
@@ -149,10 +149,10 @@ class Chip8 {
 	handleOpcode0() {
 		switch(this.counters[0] & 0x00FF) {
 			case 0x00E0:
-				this.OpcodeE0();
+				this.Opcode00E0();
 				break;
 			case 0x00EE:
-				this.OpcodeEE();
+				this.Opcode00EE();
 				break;
 			default:
 				this.opcodeNoSupport('Opcode0');
@@ -235,6 +235,18 @@ class Chip8 {
 				break;
 			default:
 				this.opcodeNoSupport('Opcode8');
+		}
+	}
+
+	Opcode00E0() { //00E0 - Clear Screen
+		this.display.clearScreen();
+	}
+
+	Opcode00EE() { //00EE - Return From Sub
+		var counter = this.stack.pop();
+
+		if (counter !== undefined) {
+			this.counters[0] = counter;
 		}
 	}
 }

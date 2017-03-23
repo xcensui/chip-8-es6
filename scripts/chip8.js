@@ -97,31 +97,43 @@ class Chip8 {
 				this.handleOpcode0();
 				break;
 			case 0x1000:
+				this.Opcode1NNN();
 				break;
 			case 0x2000:
+				this.Opcode2NNN();
 				break;
 			case 0x3000:
+				this.Opcode3XNN();
 				break;
 			case 0x4000:
+				this.Opcode4XNN();
 				break;
 			case 0x5000:
+				this.Opcode5XY0();
 				break;
 			case 0x6000:
+				this.Opcode6XNN();
 				break;
 			case 0x7000:
+				this.Opcode7XNN();
 				break;
 			case 0x8000:
 				this.handleOpcode8();
 				break;
 			case 0x9000:
+				this.Opcode9XY0();
 				break;
 			case 0xA000:
+				this.OpcodeANNN();
 				break;
 			case 0xB000:
+				this.OpcodeBNNN();
 				break;
 			case 0xC000:
+				this.OpcodeCXNN();
 				break;
 			case 0xD000:
+				this.OpcodeDXYN();
 				break;
 			case 0xE000:
 				this.handleOpcodeE();
@@ -149,21 +161,32 @@ class Chip8 {
 
 	handleOpcode8() {
 		switch(this.counter[0] & 0x000F) {
+			case 0x0000:
+				this.Opcode8XY0();
+				break;
 			case 0x0001:
+				this.Opcode8XY1();
 				break;
 			case 0x0002:
+				this.Opcode8XY2();
 				break;
 			case 0x0003:
+				this.Opcode8XY3();
 				break;
 			case 0x0004:
+				this.Opcode8XY4();
 				break;
 			case 0x0005:
+				this.Opcode8XY5();
 				break;
 			case 0x0006:
+				this.Opcode8XY6();
 				break;
 			case 0x0007:
+				this.Opcode8XY7();
 				break;
 			case 0x000E:
+				this.Opcode8XYE();
 				break;
 			default:
 				this.opcodeNoSupport('Opcode8');
@@ -184,22 +207,31 @@ class Chip8 {
 	handleOpcodeF() {
 		switch(this.counter[0] & 0x00FF) {
 			case 0x0007:
+				this.OpcodeFX07();
 				break;
 			case 0x000A:
+				this.OpcodeFX0A();
 				break;
 			case 0x0015:
+				this.OpcodeFX15();
 				break;
 			case 0x0018:
+				this.OpcodeFX18();
 				break;
 			case 0x001E:
+				this.OpcodeFX1E();
 				break;
 			case 0x0029:
+				this.OpcodeFX29();
 				break;
 			case 0x0033:
+				this.OpcodeFX33();
 				break;
 			case 0x0055:
+				this.OpcodeFX55();
 				break;
 			case 0x0065:
+				this.OpcodeFX65();
 				break;
 			default:
 				this.opcodeNoSupport('Opcode8');

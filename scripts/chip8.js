@@ -33,10 +33,10 @@ class Chip8 {
 		console.log('Resetting Chip8');
 
 		this.memory = new Uint8Array(new ArrayBuffer(0xfff));
-		this.stack = new Uint16Array(new ArrayBuffer(0x10));
+		this.stack = new Uint16Array(new ArrayBuffer(0x20));
 		this.reg = new Uint8Array(new ArrayBuffer(0x10));
 		this.keyState = new Uint8Array(new ArrayBuffer(0x10));
-		this.counters = new Uint16Array(new ArrayBuffer(4)); //Holds opcode, progCounter, addrReg, and timer.
+		this.counters = new Uint16Array(new ArrayBuffer(0x8)); //Holds opcode, progCounter, addrReg, and timer.
 		this.sound = new Chip8Sound();
 		this.display = new Chip8Display();
 		this.running = false;
@@ -52,6 +52,10 @@ class Chip8 {
 		this.counters[2] = 0;		//Reg
 		this.counters[3] = 0;		//Timer
 
+		console.log(this.memory);
+		console.log(this.stack);
+		console.log(this.reg);
+		console.log(this.keyState);
 		console.log(this.counters);
 	}
 
@@ -84,7 +88,7 @@ class Chip8 {
 	}
 
 	opcodeNoSupport(source) {
-		throw new Error('['+source+'] Opcode '+this.counters[0].toString(16)+' is not supported.');
+		console.warn('['+source+'] Opcode '+this.counters[0].toString(16)+' is not supported.');
 	}
 
 	handleOpcode() {
@@ -92,8 +96,32 @@ class Chip8 {
 			case 0x0000:
 				this.handleOpcode0();
 				break;
+			case 0x1000:
+				break;
+			case 0x2000:
+				break;
+			case 0x3000:
+				break;
+			case 0x4000:
+				break;
+			case 0x5000:
+				break;
+			case 0x6000:
+				break;
+			case 0x7000:
+				break;
 			case 0x8000:
 				this.handleOpcode8();
+				break;
+			case 0x9000:
+				break;
+			case 0xA000:
+				break;
+			case 0xB000:
+				break;
+			case 0xC000:
+				break;
+			case 0xD000:
 				break;
 			case 0xE000:
 				this.handleOpcodeE();
@@ -121,6 +149,22 @@ class Chip8 {
 
 	handleOpcode8() {
 		switch(this.counter[0] & 0x000F) {
+			case 0x0001:
+				break;
+			case 0x0002:
+				break;
+			case 0x0003:
+				break;
+			case 0x0004:
+				break;
+			case 0x0005:
+				break;
+			case 0x0006:
+				break;
+			case 0x0007:
+				break;
+			case 0x000E:
+				break;
 			default:
 				this.opcodeNoSupport('Opcode8');
 		}
@@ -128,6 +172,10 @@ class Chip8 {
 
 	handleOpcodeE() {
 		switch(this.counter[0] & 0x000F) {
+			case 0x0001:
+				break;
+			case 0x000E:
+				break;
 			default:
 				this.opcodeNoSupport('Opcode8');
 		}
@@ -135,6 +183,24 @@ class Chip8 {
 
 	handleOpcodeF() {
 		switch(this.counter[0] & 0x00FF) {
+			case 0x0007:
+				break;
+			case 0x000A:
+				break;
+			case 0x0015:
+				break;
+			case 0x0018:
+				break;
+			case 0x001E:
+				break;
+			case 0x0029:
+				break;
+			case 0x0033:
+				break;
+			case 0x0055:
+				break;
+			case 0x0065:
+				break;
 			default:
 				this.opcodeNoSupport('Opcode8');
 		}

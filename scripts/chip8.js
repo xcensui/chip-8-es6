@@ -4,8 +4,26 @@ class Chip8 {
 		this.reset(); //Because why would anyone want properties defined in their class right ES6 people?!
 	}
 
-	start() {
+	getOpcode() {
+		return this.memory[this.progCounter[0]] << 8 | this.memory[this.progCounter[0] + 1];
+	}
 
+	start() {
+		this.running = true;
+
+		window.requestAnimationFrame(this.run());
+	}
+
+	run() {
+		if (this.running) {
+			for (var i = 0; i < 10; i++) {
+				console.log(this.getOpcode());
+				this.progCounter[0] += 2;
+			}			
+
+			this.running = false;
+		}		
+		window.requestAnimationFrame(this.run());
 	}
 
 	doCycle() {

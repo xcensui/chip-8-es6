@@ -300,5 +300,79 @@ class Chip8 {
 		this.reg[x] += nn;
 	}
 
-	
+	Opcode8XY0() { //8XY0 - Set Reg X = Reg Y
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x0F00) >> 4;
+
+		this.reg[x] = this.reg[y];
+	}
+
+	Opcode8XY1() { //8XY1 - Set Reg X = (Reg X OR Reg Y)
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x0F00) >> 4;
+
+		this.reg[x] |= this.reg[y];
+	}
+
+	Opcode8XY2() { //8XY2 - Set Reg X = (Reg X AND Reg Y)
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x0F00) >> 4;
+
+		this.reg[x] &= this.reg[y];
+	}
+
+	Opcode8XY3() { //8XY3 - Set Reg X = (Reg X XOR Reg Y)
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x0F00) >> 4;
+
+		this.reg[x] ^= this.reg[y];
+	}
+
+	Opcode8XY4() { //8XY4 - Set Reg X = Reg X + Reg Y with Carry
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x0F00) >> 4;
+		this.reg[0xF] = 0;
+
+		if ((this.reg[x] + this.reg[y]) > 255) {
+			this.reg[0xF] = 1;
+		}
+
+		this.reg[x] += this.reg[y];
+	}
+
+	Opcode8XY5() { //8XY5 - Set Reg X = Reg X - Reg Y with Carry
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x0F00) >> 4;
+		this.reg[0xF] = 1;
+
+		if (this.reg[x] < this.reg[y]) {
+			this.reg[0xF] = 0;
+		}
+
+		this.reg[x] -= this.reg[y];
+	}
+
+	Opcode8XY6() { //8XY6 - Divide Reg X by 2 with Carry on LSB = 1
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		this.reg[0xF] = (this.reg[x] & 0x1);
+		this.reg[x] >>= 1;
+	}
+
+	Opcode8XY7() { //8XY7 - Set Reg X = (Reg Y - Reg X) with Carry on Not Borrow
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x0F00) >> 4;
+		this.reg[0xF] = 1;
+
+		if (this.reg[y] < this.reg[x]) {
+			this.reg[0xF] = 0;
+		}
+
+		this.reg[x] = (this.reg[y] - this.reg[x]);
+	}
+
+	Opcode8XYE() { //8XYE - Multiply Reg X by 2 with Carry on LSB = 1
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		this.reg[0xF] = (this.reg[x] >> 7);
+		this.reg[x] <<= 1;
+	}
 }

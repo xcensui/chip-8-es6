@@ -196,8 +196,10 @@ class Chip8 {
 	handleOpcodeE() {
 		switch(this.counter[0] & 0x000F) {
 			case 0x0001:
+				this.OpcodeEXA1();
 				break;
 			case 0x000E:
+				this.OpcodeEX9E();
 				break;
 			default:
 				this.opcodeNoSupport('Opcode8');
@@ -370,9 +372,115 @@ class Chip8 {
 		this.reg[x] = (this.reg[y] - this.reg[x]);
 	}
 
-	Opcode8XYE() { //8XYE - Multiply Reg X by 2 with Carry on LSB = 1
+	Opcode8XYE() { //8XYE - Multiply Reg X by 2 with Carry on MSB = 1
 		var x = (this.counters[0] & 0x0F00) >> 8;
 		this.reg[0xF] = (this.reg[x] >> 7);
 		this.reg[x] <<= 1;
+	}
+
+	Opcode9XY0() { //9XY0 - Skip Next Instruction if Reg X != Reg Y
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x0F00) >> 4;
+
+		if (this.reg[x] != this.reg[y]) {
+			this.counters[1] += 2;
+		}
+	}
+
+	OpcodeANNN() { //ANNN - Sets Addr Register to NNN
+		this.counters[2] = (this.counters[0] & 0x0FFF);
+	}
+
+	OpcodeBNNN() { //BNNN - Set Prog Counter = (NNN + Reg 0)
+		this.counters[1] = (this.reg[0] + (this.counters[0] & 0x0FFF));
+	}
+
+	OpcodeCXNN() { //CXNN - Set Reg X = (Random(0-255) AND NN)
+		var nn = this.counters[0] & 0x00FF;
+
+		this.reg[x] = (Math.floor(Math.random() * 0xFF) & nn);
+	}
+
+	OpcodeDXYN() { //DXYN - Draws an 8x8 Sprite at Location Reg X/Reg Y set Carry on Collision - This one is a bastard of a function.
+
+	}
+
+	OpcodeEXA1() { //EXA1 - Skips Next Instruction if Key in Reg X is Pressed
+		var x = (this.counters[0] & 0x0F00) >> 8;
+
+		if (this.keyState[this.reg[x]] == 1) {
+			$this.counters[1] += 2;
+		}
+	}
+
+	OpcodeEX9E() { //EX9E - Skips Next Instruction if Key in Reg X is Not Pressed
+		var x = (this.counters[0] & 0x0F00) >> 8;
+
+		if (this.keyState[this.reg[x]] == 0) {
+			$this.counters[1] += 2;
+		}
+	}
+
+	OpcodeFX07() { //FX07 - Sets Reg X = Delay Timer
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		this.reg[x] = this.counters[3];
+	}
+
+	OpcodeFX0A() { //FX0A - Waits for a Key Press then stores the Key in Reg X
+
+	}
+
+	OpcodeFX15() { //FX15 - Sets Delay Timer = Reg X
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		this.counters[3] = this.reg[x];
+	}
+
+	OpcodeFX18() { //FX18 - Sets Sound Timer = Reg X
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		this.sound.updateTimer(this.reg[x]);
+	}
+
+	OpcodeFX1E() { //FX1E - Sets Addr Reg = (Addr Reg + Reg X) sets Carry
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		this.reg[0xF] = 0;
+
+		if ((this.counters[2] + this.reg[x]) > 0xFFF) {
+			this.reg[0xF] = 1;
+		}
+
+		this.counters[2] = this.reg[x];
+	}
+
+	OpcodeFX29() { //FX29 - Sets Addr Reg = Location of Font in Reg X
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		this.counters[2] = (this.reg[x] * 5);
+	}
+
+	OpcodeFX33() { //FX33 - Stores BCD Representation of Reg X in Memory starting at Addr Reg
+		var x = (this.counters[0] & 0x0F00) >> 8;
+
+		var units = (this.reg[x] % 10);
+		var tens = ((this.reg[x] / 10) % 10);
+		var hundreds = (this.reg[x] / 100);
+
+		this.memory[this.counters[2] + 2] = units;
+		this.memory[this.counters[2] + 1] = tens;
+		this.memory[this.counters[2]] = hundreds;
+	}
+
+	OpcodeFX55() { //FX55 - Stores Registers From Reg 0 to Reg X into Memory starting at Addr Reg
+		var x = (this.counters[0] & 0x0F00) >> 8;
+
+		for(var i = 0; i < x; i++) {
+			this.memory[this.counters[2] + i] = this.reg[i];
+		}
+	}
+
+	OpcodeFX65() { //FX65 - Reads Registers From Reg 0 to Reg X from Memory starting at Addr Reg
+		var x = (this.counters[0] & 0x0F00) >> 8;
+
+		for(var i = 0; i < x; i++) {
+			this.reg[i] = this.memory[this.counters[2] + i];
+		}
 	}
 }

@@ -87,6 +87,14 @@ class Chip8 {
 		this.handleOpcode();
 	}
 
+	handleTimers() {
+		if (this.counters[3] > 0) {
+			this.counters[3]--;
+		}
+
+		this.sound.handleTimers();
+	}
+
 	opcodeNoSupport(source) {
 		console.warn('['+source+'] Opcode '+this.counters[0].toString(16)+' is not supported.');
 	}

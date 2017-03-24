@@ -3,13 +3,10 @@ class Chip8Sound {
 		this.reset();
 	}
 
-	timerEvent() {
-		if (this.timer[0] > 0) {
-			this.timer[0]--;
-		}
-
+	handleTimers() {
 		if (this.timer[0] > 0) {
 			this.playSound();
+			this.timer[0]--;
 		}
 	}
 
@@ -23,6 +20,6 @@ class Chip8Sound {
 	}
 
 	playSound() {
-
+		console.log('Sound playing...Well not yet, no implementation. :D')
 	}
 }

@@ -51,12 +51,12 @@ class Chip8 {
 		this.counters[1] = 0x200;	//PC
 		this.counters[2] = 0;		//Reg
 		this.counters[3] = 0;		//Timer
+	}
 
-		console.log(this.memory);
-		console.log(this.stack);
-		console.log(this.reg);
-		console.log(this.keyState);
-		console.log(this.counters);
+	getKeyPressed() {
+		var key = null;
+
+		return key;
 	}
 
 	systemFont() {
@@ -427,7 +427,15 @@ class Chip8 {
 	}
 
 	OpcodeFX0A() { //FX0A - Waits for a Key Press then stores the Key in Reg X
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var key = this.getKeyPressed();
 
+		if (key !== null) {
+			this.reg[x] = key;
+		}
+		else {
+			this.counters[1] -= 2;
+		}
 	}
 
 	OpcodeFX15() { //FX15 - Sets Delay Timer = Reg X

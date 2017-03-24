@@ -416,8 +416,22 @@ class Chip8 {
 		var collision = false;
 		this.reg[0xF] = 0;
 
-		if (collision) {
-			this.reg[0xF] = 1;
+		for (var lineY = 0; lineY < n; lineY++) {
+			var data = this.memory[(this.counters[3] + lineY)];
+
+			for (var lineX = 0; lineX < 8; lineX++, lineXInv--) {
+				var mask = 0x80;
+				var posX = (this.reg[x] + lineX);
+				var posY = (this.reg[y] + lineY);
+
+				if ((data & mask) > 0) {
+					collision = this.display.toggleXYValue(posX, posY);
+
+					if (collision) {
+						this.reg[0xF] = 1;
+					}
+				}
+			}
 		}
 	}
 

@@ -289,7 +289,7 @@ class Chip8 {
 
 	Opcode5XY0() { //5XY0 - Skip Next Instruction if Reg X = Reg Y
 		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x0F00) >> 4;
+		var y = (this.counters[0] & 0x00F0) >> 4;
 
 		if (this.reg[x] == this.reg[y]) {
 			this.counters[1] += 2;
@@ -312,35 +312,35 @@ class Chip8 {
 
 	Opcode8XY0() { //8XY0 - Set Reg X = Reg Y
 		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x0F00) >> 4;
+		var y = (this.counters[0] & 0x00F0) >> 4;
 
 		this.reg[x] = this.reg[y];
 	}
 
 	Opcode8XY1() { //8XY1 - Set Reg X = (Reg X OR Reg Y)
 		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x0F00) >> 4;
+		var y = (this.counters[0] & 0x00F0) >> 4;
 
 		this.reg[x] |= this.reg[y];
 	}
 
 	Opcode8XY2() { //8XY2 - Set Reg X = (Reg X AND Reg Y)
 		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x0F00) >> 4;
+		var y = (this.counters[0] & 0x00F0) >> 4;
 
 		this.reg[x] &= this.reg[y];
 	}
 
 	Opcode8XY3() { //8XY3 - Set Reg X = (Reg X XOR Reg Y)
 		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x0F00) >> 4;
+		var y = (this.counters[0] & 0x00F0) >> 4;
 
 		this.reg[x] ^= this.reg[y];
 	}
 
 	Opcode8XY4() { //8XY4 - Set Reg X = Reg X + Reg Y with Carry
 		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x0F00) >> 4;
+		var y = (this.counters[0] & 0x00F0) >> 4;
 		this.reg[0xF] = 0;
 
 		if ((this.reg[x] + this.reg[y]) > 255) {
@@ -352,7 +352,7 @@ class Chip8 {
 
 	Opcode8XY5() { //8XY5 - Set Reg X = Reg X - Reg Y with Carry
 		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x0F00) >> 4;
+		var y = (this.counters[0] & 0x00F0) >> 4;
 		this.reg[0xF] = 1;
 
 		if (this.reg[x] < this.reg[y]) {
@@ -370,7 +370,7 @@ class Chip8 {
 
 	Opcode8XY7() { //8XY7 - Set Reg X = (Reg Y - Reg X) with Carry on Not Borrow
 		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x0F00) >> 4;
+		var y = (this.counters[0] & 0x00F0) >> 4;
 		this.reg[0xF] = 1;
 
 		if (this.reg[y] < this.reg[x]) {
@@ -410,7 +410,15 @@ class Chip8 {
 	}
 
 	OpcodeDXYN() { //DXYN - Draws an 8x8 Sprite at Location Reg X/Reg Y set Carry on Collision - This one is a bastard of a function.
+		var x = (this.counters[0] & 0x0F00) >> 8;
+		var y = (this.counters[0] & 0x00F0) >> 4;
+		var n = (this.counters[0] & 0x000F);
+		var collision = false;
+		this.reg[0xF] = 0;
 
+		if (collision) {
+			this.reg[0xF] = 1;
+		}
 	}
 
 	OpcodeEXA1() { //EXA1 - Skips Next Instruction if Key in Reg X is Pressed

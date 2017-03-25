@@ -5,6 +5,7 @@ class Chip8Sound {
 
 	handleTimers() {
 		if (this.timer[0] > 0) {
+			console.log('Sound Timer');
 			this.playSound();
 			this.timer[0]--;
 		}
@@ -20,6 +21,6 @@ class Chip8Sound {
 	}
 
 	playSound() {
-		console.log('Sound playing...Well not yet, no implementation. :D')
+		console.warn('Sound playing...Well not yet, no implementation. :D')
 	}
 }

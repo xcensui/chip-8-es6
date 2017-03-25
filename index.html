@@ -19,7 +19,16 @@
     <script>
     	window.onload = function() {
     		var chip8 = new Chip8();
-    		chip8.start();
+    		var xhr = new XMLHttpRequest;
+    		xhr.open('get', 'http://localhost/roms/invaders', true);
+    		xhr.responseType = 'arraybuffer';
+
+    		xhr.onload = function() {
+    			chip8.load(new Uint8Array(xhr.response));
+    			chip8.start();
+    		}
+
+    		xhr.send();
     	};
     </script>
 

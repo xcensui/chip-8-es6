@@ -1,6 +1,7 @@
 class Chip8 {
 
 	constructor() {
+		this.perFrame = 400 / 60; //400 opcodes per second at 60Hz
 		this.reset(); //Because why would anyone want properties defined in their class right ES6 people?!
 	}
 
@@ -15,13 +16,23 @@ class Chip8 {
 
 	run() {
 		if (this.running) {
-			for (var i = 0; i < 10; i++) {
-				this.doCycle();
-			}			
+			this.handleTimers();
 
-			this.stop();
+			for (var i = 0; i < this.perFrame; i++) {
+				this.doCycle();
+			}
+
+			//this.rendering.frame();
 		
 			window.requestAnimationFrame(() => this.run());
+		}
+	}
+
+	load(program) {
+		console.log('Loading ROM');
+
+		for (var i = 0; i < program.length; i++) {
+			this.memory[i + 0x200] = program[i];
 		}
 	}
 
@@ -89,6 +100,7 @@ class Chip8 {
 
 	handleTimers() {
 		if (this.counters[3] > 0) {
+			console.log('Delay Timer');
 			this.counters[3]--;
 		}
 
@@ -102,51 +114,67 @@ class Chip8 {
 	handleOpcode() {
 		switch(this.counters[0] & 0xF000) {
 			case 0x0000:
+				console.log('Opcode0');
 				this.handleOpcode0();
 				break;
 			case 0x1000:
+				console.log('Opcode1NNN');
 				this.Opcode1NNN();
 				break;
 			case 0x2000:
+				console.log('Opcode2NNN');			
 				this.Opcode2NNN();
 				break;
 			case 0x3000:
+				console.log('Opcode3XNN');			
 				this.Opcode3XNN();
 				break;
 			case 0x4000:
+				console.log('Opcode4XNN');			
 				this.Opcode4XNN();
 				break;
 			case 0x5000:
+				console.log('Opcode5XY0');
 				this.Opcode5XY0();
 				break;
 			case 0x6000:
+				console.log('Opcode6XNN');
 				this.Opcode6XNN();
 				break;
 			case 0x7000:
+				console.log('Opcode7XNN');
 				this.Opcode7XNN();
 				break;
 			case 0x8000:
+				console.log('Opcode8');
 				this.handleOpcode8();
 				break;
 			case 0x9000:
+				console.log('Opcode9XY0');
 				this.Opcode9XY0();
 				break;
 			case 0xA000:
+				console.log('OpcodeANNN');
 				this.OpcodeANNN();
 				break;
 			case 0xB000:
+				console.log('OpcodeBNNN');
 				this.OpcodeBNNN();
 				break;
 			case 0xC000:
+				console.log('OpcodeCXNN');
 				this.OpcodeCXNN();
 				break;
 			case 0xD000:
+				console.log('OpcodeDXYN');
 				this.OpcodeDXYN();
 				break;
 			case 0xE000:
+				console.log('OpcodeE');
 				this.handleOpcodeE();
 				break;
 			case 0xF000:
+				console.log('OpcodeF');
 				this.handleOpcodeF();
 				break;
 			default:
@@ -157,9 +185,11 @@ class Chip8 {
 	handleOpcode0() {
 		switch(this.counters[0] & 0x00FF) {
 			case 0x00E0:
+				console.log('Opcode00E0');
 				this.Opcode00E0();
 				break;
 			case 0x00EE:
+				console.log('Opcode00EE');
 				this.Opcode00EE();
 				break;
 			default:
@@ -168,32 +198,41 @@ class Chip8 {
 	}
 
 	handleOpcode8() {
-		switch(this.counter[0] & 0x000F) {
+		switch(this.counters[0] & 0x000F) {
 			case 0x0000:
+				console.log('Opcode8XY0');
 				this.Opcode8XY0();
 				break;
 			case 0x0001:
+				console.log('Opcode8XY1');
 				this.Opcode8XY1();
 				break;
 			case 0x0002:
+				console.log('Opcode8XY2');
 				this.Opcode8XY2();
 				break;
 			case 0x0003:
+				console.log('Opcode8XY3');
 				this.Opcode8XY3();
 				break;
 			case 0x0004:
+				console.log('Opcode8XY4');
 				this.Opcode8XY4();
 				break;
 			case 0x0005:
+				console.log('Opcode8XY5');
 				this.Opcode8XY5();
 				break;
 			case 0x0006:
+				console.log('Opcode8XY6');
 				this.Opcode8XY6();
 				break;
 			case 0x0007:
+				console.log('Opcode8XY7');
 				this.Opcode8XY7();
 				break;
 			case 0x000E:
+				console.log('Opcode8XYE');
 				this.Opcode8XYE();
 				break;
 			default:
@@ -202,11 +241,13 @@ class Chip8 {
 	}
 
 	handleOpcodeE() {
-		switch(this.counter[0] & 0x000F) {
+		switch(this.counters[0] & 0x000F) {
 			case 0x0001:
+				console.log('OpcodeEXA1');
 				this.OpcodeEXA1();
 				break;
 			case 0x000E:
+				console.log('OpcodeEX9E');
 				this.OpcodeEX9E();
 				break;
 			default:
@@ -215,32 +256,41 @@ class Chip8 {
 	}
 
 	handleOpcodeF() {
-		switch(this.counter[0] & 0x00FF) {
+		switch(this.counters[0] & 0x00FF) {
 			case 0x0007:
+				console.log('OpcodeFX07');
 				this.OpcodeFX07();
 				break;
 			case 0x000A:
+				console.log('OpcodeFX0A');
 				this.OpcodeFX0A();
 				break;
 			case 0x0015:
+				console.log('OpcodeFX15');
 				this.OpcodeFX15();
 				break;
 			case 0x0018:
+				console.log('OpcodeFX18');
 				this.OpcodeFX18();
 				break;
 			case 0x001E:
+				console.log('OpcodeFX1E');
 				this.OpcodeFX1E();
 				break;
 			case 0x0029:
+				console.log('OpcodeFX29');
 				this.OpcodeFX29();
 				break;
 			case 0x0033:
+				console.log('OpcodeFX33');
 				this.OpcodeFX33();
 				break;
 			case 0x0055:
+				console.log('OpcodeFX55');
 				this.OpcodeFX55();
 				break;
 			case 0x0065:
+				console.log('OpcodeFX65');
 				this.OpcodeFX65();
 				break;
 			default:
@@ -419,7 +469,7 @@ class Chip8 {
 		for (var lineY = 0; lineY < n; lineY++) {
 			var data = this.memory[(this.counters[3] + lineY)];
 
-			for (var lineX = 0; lineX < 8; lineX++, lineXInv--) {
+			for (var lineX = 0; lineX < 8; lineX++) {
 				var mask = 0x80;
 				var posX = (this.reg[x] + lineX);
 				var posY = (this.reg[y] + lineY);
@@ -439,7 +489,7 @@ class Chip8 {
 		var x = (this.counters[0] & 0x0F00) >> 8;
 
 		if (this.keyState[this.reg[x]] == 1) {
-			$this.counters[1] += 2;
+			this.counters[1] += 2;
 		}
 	}
 
@@ -447,7 +497,7 @@ class Chip8 {
 		var x = (this.counters[0] & 0x0F00) >> 8;
 
 		if (this.keyState[this.reg[x]] == 0) {
-			$this.counters[1] += 2;
+			this.counters[1] += 2;
 		}
 	}
 

@@ -117,13 +117,14 @@ class Chip8 {
 	}
 
 	handleOpcode() {
+		this.o = (this.counters[0] & 0xF000);
 		this.x = (this.counters[0] & 0x0F00) >> 8;
 		this.y = (this.counters[0] & 0x00F0) >> 4;
 		this.n = (this.counters[0] & 0x000F);
 		this.nn = (this.counters[0] & 0x00FF);
 		this.nnn = (this.counters[0] & 0x0FFF);
 
-		switch(this.counters[0] & 0xF000) {
+		switch(this.o) {
 			case 0x0000:
 				console.log('Opcode0');
 				this.handleOpcode0();
@@ -194,7 +195,7 @@ class Chip8 {
 	}
 
 	handleOpcode0() {
-		switch(this.counters[0] & 0x00FF) {
+		switch(this.nn) {
 			case 0x00E0:
 				console.log('Opcode00E0');
 				this.Opcode00E0();
@@ -209,7 +210,7 @@ class Chip8 {
 	}
 
 	handleOpcode8() {
-		switch(this.counters[0] & 0x000F) {
+		switch(this.n) {
 			case 0x0000:
 				console.log('Opcode8XY0');
 				this.Opcode8XY0();
@@ -252,7 +253,7 @@ class Chip8 {
 	}
 
 	handleOpcodeE() {
-		switch(this.counters[0] & 0x000F) {
+		switch(this.n) {
 			case 0x0001:
 				console.log('OpcodeEXA1');
 				this.OpcodeEXA1();
@@ -267,7 +268,7 @@ class Chip8 {
 	}
 
 	handleOpcodeF() {
-		switch(this.counters[0] & 0x00FF) {
+		switch(this.nn) {
 			case 0x0007:
 				console.log('OpcodeFX07');
 				this.OpcodeFX07();

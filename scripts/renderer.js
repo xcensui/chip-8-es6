@@ -9,8 +9,7 @@ class CanvasRenderer {
 		this.modWidth = this.width * this.size;
 		this.modHeight = this.height * this.size;
 
-		this.bgColour = 'transparent';
-		this.fgColour = '#fff';
+		this.colours = ['transparent', '#00f']; //BG, FG
 
 		this.frames = 0;
 		this.lastFPSCheck = 0;
@@ -21,7 +20,17 @@ class CanvasRenderer {
 	}
 
 	frame(screen) {
+		this.clear();
 
+		for (var i = 0; i < screen.length; i++) {
+			var x = (i % this.width) * this.size;
+			var y = Math.floor((i / this.width)) * this.size;
+
+			this.context.fillStyle = this.colours[screen[i]];
+			this.context.fillRect(x, y, this.size, this.size);
+		}
+
+		this.frames++;
 	}
 
 	getFPS() {

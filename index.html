@@ -3,6 +3,7 @@
 	<title>Chip 8 Emulator</title>
 
 	<link href="./styles/main.css" rel="stylesheet" type="text/css">
+	<script src="./scripts/renderer.js"></script>
 	<script src="./scripts/chip8Display.js"></script>
 	<script src="./scripts/chip8Sound.js"></script>
 	<script src="./scripts/chip8.js"></script>
@@ -14,24 +15,34 @@
 		Just a fun project to make a Chip 8 emulator using ES6...
 	</p>
 
+	<a href="#" id="start">Click to start</a>
+
 	<canvas></canvas>
 
     <script>
     	window.onload = function() {
     		var canvas = document.querySelector('canvas');
-    		var chip8 = new Chip8(new CanvasRenderer(canvas, 4));
+    		var start = document.querySelector('#start');
+    		var render = new CanvasRenderer(canvas, 4);
+    		render.clear();
+    		var chip8 = new Chip8(render);
 
-    		//Gets and loads rom into the emulator and starts the emulation loop.
-    		var xhr = new XMLHttpRequest;
-    		xhr.open('get', 'http://localhost/roms/invaders', true);
-    		xhr.responseType = 'arraybuffer';
+    		start.onclick = function() {
+    			var xhr = new XMLHttpRequest;
+    			xhr.open('get', 'roms/invaders', true);
+	    		xhr.responseType = 'arraybuffer';
 
-    		xhr.onload = function() {
-    			chip8.load(new Uint8Array(xhr.response));
-    			chip8.start();
-    		}
+	    		xhr.onload = function() {
+	    			chip8.load(new Uint8Array(xhr.response));
+	    			chip8.start();
+	    		}
 
-    		xhr.send();
+	    		xhr.send();
+
+	    		document.querySelector('#start').style.display = 'none';
+
+    			return false;
+    		};
     	};
     </script>
 

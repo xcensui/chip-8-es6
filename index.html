@@ -14,11 +14,14 @@
 		Just a fun project to make a Chip 8 emulator using ES6...
 	</p>
 
-	<canvas></canvas> <!--For display use when get that far...-->
+	<canvas></canvas>
 
     <script>
     	window.onload = function() {
-    		var chip8 = new Chip8();
+    		var canvas = document.querySelector('canvas');
+    		var chip8 = new Chip8(new CanvasRenderer(canvas, 4));
+
+    		//Gets and loads rom into the emulator and starts the emulation loop.
     		var xhr = new XMLHttpRequest;
     		xhr.open('get', 'http://localhost/roms/invaders', true);
     		xhr.responseType = 'arraybuffer';

@@ -1,15 +1,26 @@
 class CanvasRenderer {
-	constructor(canvas, width, height, size) {
+	constructor(canvas, size) {
+		this.context = canvas.getContext('2d');
 		this.canvas = canvas;
-		this.width = width;
-		this.height = height;
+		this.width = 64;
+		this.height = 32;
 		this.size = size;
+
+		this.modWidth = this.width * this.size;
+		this.modHeight = this.height * this.size;
+
+		this.bgColour = 'transparent';
+		this.fgColour = '#fff';
 
 		this.frames = 0;
 		this.lastFPSCheck = 0;
 	}
 
-	render() {
+	clear() {
+		this.context.clearRect(0, 0, this.modWidth, this.modHeight);
+	}
+
+	frame(screen) {
 
 	}
 

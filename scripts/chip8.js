@@ -1,7 +1,8 @@
 class Chip8 {
 
-	constructor() {
+	constructor(renderer) {
 		this.perFrame = 400 / 60; //400 opcodes per second at 60Hz
+		this.renderer = renderer;
 		this.reset(); //Because why would anyone want properties defined in their class right ES6 people?!
 	}
 
@@ -22,7 +23,7 @@ class Chip8 {
 				this.doCycle();
 			}
 
-			//this.rendering.frame();
+			this.renderer.frame(this.display.getScreen());
 		
 			window.requestAnimationFrame(() => this.run());
 		}

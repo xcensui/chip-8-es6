@@ -11,6 +11,10 @@ class Chip8Display {
 		this.display = new Uint8Array(new ArrayBuffer(this.width*this.height));
 	}
 
+	getScreen() {
+		return this.display;
+	}
+
 	toggleXYValue(x, y) {
 		if (x > this.width) {
 			x -= this.width;

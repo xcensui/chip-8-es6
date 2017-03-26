@@ -1,7 +1,7 @@
 class Chip8 {
 
 	constructor(renderer) {
-		this.perFrame = 400 / 60; //400 opcodes per second at 60Hz
+		this.perFrame = Math.floor(400 / 60); //400 opcodes per second at 60Hz
 		this.renderer = renderer;
 		this.reset(); //Because why would anyone want properties defined in their class right ES6 people?!
 	}
@@ -57,9 +57,8 @@ class Chip8 {
 		this.display = new Chip8Display();
 		this.running = false;
 		var font = this.systemFont();
-		var i = 0;
 
-		for (i; i < font.length; i++) {
+		for (var i = 0; i < font.length; i++) {
 			this.memory[i] = font[i];
 		}
 
@@ -450,6 +449,8 @@ class Chip8 {
 						this.reg[0xF] = 1;
 					}
 				}
+
+				data <<= 1;
 			}
 		}
 

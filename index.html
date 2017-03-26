@@ -12,10 +12,10 @@
 <body>
 	<h1>Chip 8 Emulator</h1>
 	<p>
-		Just a fun project to make a Chip 8 emulator using ES6...
-	</p>
+		Just a fun project to make a Chip 8 emulator using ES6...<br/><br/>
 
-	<a href="#" id="start">Click to start</a>
+		<a href="#" id="start">Click to start</a>
+	</p>	
 
 	<canvas></canvas>
 
@@ -29,7 +29,7 @@
 
     		start.onclick = function() {
     			var xhr = new XMLHttpRequest;
-    			xhr.open('get', 'roms/invaders', true);
+    			xhr.open('get', 'roms/pong', true);
 	    		xhr.responseType = 'arraybuffer';
 
 	    		xhr.onload = function() {

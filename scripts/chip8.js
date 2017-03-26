@@ -23,7 +23,10 @@ class Chip8 {
 				this.doCycle();
 			}
 
-			this.renderer.frame(this.display.getScreen());
+			if (this.frameChanged) {
+				this.renderer.frame(this.display.getScreen());
+				this.frameChanged = false;
+			}
 		
 			window.requestAnimationFrame(() => this.run());
 		}
@@ -44,6 +47,7 @@ class Chip8 {
 	reset() {
 		console.log('Resetting Chip8');
 
+		this.frameChanged = false;
 		this.memory = new Uint8Array(new ArrayBuffer(0xfff));
 		this.stack = new Array(16);
 		this.reg = new Uint8Array(new ArrayBuffer(0x10));
@@ -113,6 +117,12 @@ class Chip8 {
 	}
 
 	handleOpcode() {
+		this.x = (this.counters[0] & 0x0F00) >> 8;
+		this.y = (this.counters[0] & 0x00F0) >> 4;
+		this.n = (this.counters[0] & 0x000F);
+		this.nn = (this.counters[0] & 0x00FF);
+		this.nnn = (this.counters[0] & 0x0FFF);
+
 		switch(this.counters[0] & 0xF000) {
 			case 0x0000:
 				console.log('Opcode0');
@@ -321,159 +331,116 @@ class Chip8 {
 	}
 
 	Opcode3XNN() { //3XNN - Skip Next Instruction if Reg X = NN
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var nn = this.counters[0] & 0x00FF;
-
-		if (this.reg[x] == nn) {
+		if (this.reg[this.x] == this.nn) {
 			this.counters[1] += 2;
 		}
 	}
 
 	Opcode4XNN() { //4XNN - Skip Next Instruction if Reg X != NN
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var nn = this.counters[0] & 0x00FF;
-
-		if (this.reg[x] != nn) {
+		if (this.reg[this.x] != this.nn) {
 			this.counters[1] += 2;
 		}
 	}
 
 	Opcode5XY0() { //5XY0 - Skip Next Instruction if Reg X = Reg Y
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x00F0) >> 4;
-
-		if (this.reg[x] == this.reg[y]) {
+		if (this.reg[this.x] == this.reg[this.y]) {
 			this.counters[1] += 2;
 		}
 	}
 
 	Opcode6XNN() { //6XNN - Set Reg X = NN
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var nn = this.counters[0] & 0x00FF;
-
-		this.reg[x] = nn;
+		this.reg[this.x] = this.nn;
 	}
 
 	Opcode7XNN() { //7XNN - Add NN to Reg X
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var nn = this.counters[0] & 0x00FF;
-
-		this.reg[x] += nn;
+		this.reg[this.x] += this.nn;
 	}
 
 	Opcode8XY0() { //8XY0 - Set Reg X = Reg Y
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x00F0) >> 4;
-
-		this.reg[x] = this.reg[y];
+		this.reg[this.x] = this.reg[this.y];
 	}
 
 	Opcode8XY1() { //8XY1 - Set Reg X = (Reg X OR Reg Y)
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x00F0) >> 4;
-
-		this.reg[x] |= this.reg[y];
+		this.reg[this.x] |= this.reg[this.y];
 	}
 
 	Opcode8XY2() { //8XY2 - Set Reg X = (Reg X AND Reg Y)
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x00F0) >> 4;
-
-		this.reg[x] &= this.reg[y];
+		this.reg[this.x] &= this.reg[this.y];
 	}
 
 	Opcode8XY3() { //8XY3 - Set Reg X = (Reg X XOR Reg Y)
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x00F0) >> 4;
-
-		this.reg[x] ^= this.reg[y];
+		this.reg[this.x] ^= this.reg[this.y];
 	}
 
 	Opcode8XY4() { //8XY4 - Set Reg X = Reg X + Reg Y with Carry
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x00F0) >> 4;
 		this.reg[0xF] = 0;
 
-		if ((this.reg[x] + this.reg[y]) > 255) {
+		if ((this.reg[this.x] + this.reg[this.y]) > 255) {
 			this.reg[0xF] = 1;
 		}
 
-		this.reg[x] += this.reg[y];
+		this.reg[this.x] += this.reg[this.y];
 	}
 
 	Opcode8XY5() { //8XY5 - Set Reg X = Reg X - Reg Y with Carry
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x00F0) >> 4;
 		this.reg[0xF] = 1;
 
-		if (this.reg[x] < this.reg[y]) {
+		if (this.reg[this.x] < this.reg[this.y]) {
 			this.reg[0xF] = 0;
 		}
 
-		this.reg[x] -= this.reg[y];
+		this.reg[this.x] -= this.reg[this.y];
 	}
 
 	Opcode8XY6() { //8XY6 - Divide Reg X by 2 with Carry on LSB = 1
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		this.reg[0xF] = (this.reg[x] & 0x1);
-		this.reg[x] >>= 1;
+		this.reg[0xF] = (this.reg[this.x] & 0x1);
+		this.reg[this.x] >>= 1;
 	}
 
 	Opcode8XY7() { //8XY7 - Set Reg X = (Reg Y - Reg X) with Carry on Not Borrow
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x00F0) >> 4;
 		this.reg[0xF] = 1;
 
-		if (this.reg[y] < this.reg[x]) {
+		if (this.reg[this.y] < this.reg[this.x]) {
 			this.reg[0xF] = 0;
 		}
 
-		this.reg[x] = (this.reg[y] - this.reg[x]);
+		this.reg[this.x] = (this.reg[this.y] - this.reg[this.x]);
 	}
 
 	Opcode8XYE() { //8XYE - Multiply Reg X by 2 with Carry on MSB = 1
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		this.reg[0xF] = (this.reg[x] >> 7);
-		this.reg[x] <<= 1;
+		this.reg[0xF] = (this.reg[this.x] >> 7);
+		this.reg[this.x] <<= 1;
 	}
 
 	Opcode9XY0() { //9XY0 - Skip Next Instruction if Reg X != Reg Y
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x0F00) >> 4;
-
-		if (this.reg[x] != this.reg[y]) {
+		if (this.reg[this.x] != this.reg[this.y]) {
 			this.counters[1] += 2;
 		}
 	}
 
 	OpcodeANNN() { //ANNN - Sets Addr Register to NNN
-		this.counters[2] = (this.counters[0] & 0x0FFF);
+		this.counters[2] = this.nnn;
 	}
 
 	OpcodeBNNN() { //BNNN - Set Prog Counter = (NNN + Reg 0)
-		this.counters[1] = (this.reg[0] + (this.counters[0] & 0x0FFF));
+		this.counters[1] = (this.reg[0] + this.nnn);
 	}
 
 	OpcodeCXNN() { //CXNN - Set Reg X = (Random(0-255) AND NN)
-		var nn = this.counters[0] & 0x00FF;
-
-		this.reg[x] = (Math.floor(Math.random() * 0xFF) & nn);
+		this.reg[this.x] = (Math.floor(Math.random() * 0xFF) & this.nn);
 	}
 
 	OpcodeDXYN() { //DXYN - Draws an 8x8 Sprite at Location Reg X/Reg Y set Carry on Collision - This one is a bastard of a function.
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		var y = (this.counters[0] & 0x00F0) >> 4;
-		var n = (this.counters[0] & 0x000F);
 		var collision = false;
 		this.reg[0xF] = 0;
 
-		for (var lineY = 0; lineY < n; lineY++) {
-			var data = this.memory[(this.counters[3] + lineY)];
+		for (var lineY = 0; lineY < this.n; lineY++) {
+			var data = this.memory[(this.counters[2] + lineY)];
 
 			for (var lineX = 0; lineX < 8; lineX++) {
 				var mask = 0x80;
-				var posX = (this.reg[x] + lineX);
-				var posY = (this.reg[y] + lineY);
+				var posX = (this.reg[this.x] + lineX);
+				var posY = (this.reg[this.y] + lineY);
 
 				if ((data & mask) > 0) {
 					collision = this.display.toggleXYValue(posX, posY);
@@ -484,35 +451,31 @@ class Chip8 {
 				}
 			}
 		}
+
+		this.frameChanged = true;
 	}
 
 	OpcodeEXA1() { //EXA1 - Skips Next Instruction if Key in Reg X is Pressed
-		var x = (this.counters[0] & 0x0F00) >> 8;
-
-		if (this.keyState[this.reg[x]] == 1) {
+		if (this.keyState[this.reg[this.x]] == 1) {
 			this.counters[1] += 2;
 		}
 	}
 
 	OpcodeEX9E() { //EX9E - Skips Next Instruction if Key in Reg X is Not Pressed
-		var x = (this.counters[0] & 0x0F00) >> 8;
-
-		if (this.keyState[this.reg[x]] == 0) {
+		if (this.keyState[this.reg[this.x]] == 0) {
 			this.counters[1] += 2;
 		}
 	}
 
 	OpcodeFX07() { //FX07 - Sets Reg X = Delay Timer
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		this.reg[x] = this.counters[3];
+		this.reg[this.x] = this.counters[3];
 	}
 
 	OpcodeFX0A() { //FX0A - Waits for a Key Press then stores the Key in Reg X
-		var x = (this.counters[0] & 0x0F00) >> 8;
 		var key = this.getKeyPressed();
 
 		if (key !== null) {
-			this.reg[x] = key;
+			this.reg[this.x] = key;
 		}
 		else {
 			this.counters[1] -= 2;
@@ -520,37 +483,31 @@ class Chip8 {
 	}
 
 	OpcodeFX15() { //FX15 - Sets Delay Timer = Reg X
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		this.counters[3] = this.reg[x];
+		this.counters[3] = this.reg[this.x];
 	}
 
 	OpcodeFX18() { //FX18 - Sets Sound Timer = Reg X
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		this.sound.updateTimer(this.reg[x]);
+		this.sound.updateTimer(this.reg[this.x]);
 	}
 
 	OpcodeFX1E() { //FX1E - Sets Addr Reg = (Addr Reg + Reg X) sets Carry
-		var x = (this.counters[0] & 0x0F00) >> 8;
 		this.reg[0xF] = 0;
 
-		if ((this.counters[2] + this.reg[x]) > 0xFFF) {
+		if ((this.counters[2] + this.reg[this.x]) > 0xFFF) {
 			this.reg[0xF] = 1;
 		}
 
-		this.counters[2] = this.reg[x];
+		this.counters[2] = this.reg[this.x];
 	}
 
 	OpcodeFX29() { //FX29 - Sets Addr Reg = Location of Font in Reg X
-		var x = (this.counters[0] & 0x0F00) >> 8;
-		this.counters[2] = (this.reg[x] * 5);
+		this.counters[2] = (this.reg[this.x] * 5);
 	}
 
 	OpcodeFX33() { //FX33 - Stores BCD Representation of Reg X in Memory starting at Addr Reg
-		var x = (this.counters[0] & 0x0F00) >> 8;
-
-		var units = (this.reg[x] % 10);
-		var tens = ((this.reg[x] / 10) % 10);
-		var hundreds = (this.reg[x] / 100);
+		var units = (this.reg[this.x] % 10);
+		var tens = ((this.reg[this.x] / 10) % 10);
+		var hundreds = (this.reg[this.x] / 100);
 
 		this.memory[this.counters[2] + 2] = units;
 		this.memory[this.counters[2] + 1] = tens;
@@ -558,17 +515,13 @@ class Chip8 {
 	}
 
 	OpcodeFX55() { //FX55 - Stores Registers From Reg 0 to Reg X into Memory starting at Addr Reg
-		var x = (this.counters[0] & 0x0F00) >> 8;
-
-		for(var i = 0; i < x; i++) {
+		for(var i = 0; i < this.x; i++) {
 			this.memory[this.counters[2] + i] = this.reg[i];
 		}
 	}
 
 	OpcodeFX65() { //FX65 - Reads Registers From Reg 0 to Reg X from Memory starting at Addr Reg
-		var x = (this.counters[0] & 0x0F00) >> 8;
-
-		for(var i = 0; i < x; i++) {
+		for(var i = 0; i < this.x; i++) {
 			this.reg[i] = this.memory[this.counters[2] + i];
 		}
 	}

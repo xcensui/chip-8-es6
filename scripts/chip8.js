@@ -310,6 +310,7 @@ class Chip8 {
 	}
 
 	Opcode00E0() { //00E0 - Clear Screen
+		this.renderer.clear();
 		this.display.clearScreen();
 	}
 
@@ -327,11 +328,11 @@ class Chip8 {
 
 	Opcode2NNN() { //2NNN Save Position and Jump To
 		this.stack.push(this.counters[1]);
-		this.counters[1] = (this.counters[0] & 0x0FFF);		
+		this.counters[1] = (this.nnn);		
 	}
 
 	Opcode3XNN() { //3XNN - Skip Next Instruction if Reg X = NN
-		if (this.reg[this.x] == this.nn) {
+		if (this.reg[this.x] === this.nn) {
 			this.counters[1] += 2;
 		}
 	}
@@ -343,16 +344,21 @@ class Chip8 {
 	}
 
 	Opcode5XY0() { //5XY0 - Skip Next Instruction if Reg X = Reg Y
-		if (this.reg[this.x] == this.reg[this.y]) {
+		if (this.reg[this.x] === this.reg[this.y]) {
 			this.counters[1] += 2;
 		}
 	}
 
 	Opcode6XNN() { //6XNN - Set Reg X = NN
 		this.reg[this.x] = this.nn;
+
 	}
 
 	Opcode7XNN() { //7XNN - Add NN to Reg X
+		if ((this.nn + this.reg[this.x]) > 255) {
+			this.nn -= 256;
+		}
+
 		this.reg[this.x] += this.nn;
 	}
 
@@ -374,12 +380,14 @@ class Chip8 {
 
 	Opcode8XY4() { //8XY4 - Set Reg X = Reg X + Reg Y with Carry
 		this.reg[0xF] = 0;
+		var val = this.reg[this.x] + this.reg[this.y];
 
-		if ((this.reg[this.x] + this.reg[this.y]) > 255) {
+		if (val > 255) {
 			this.reg[0xF] = 1;
+			val -= 256;
 		}
 
-		this.reg[this.x] += this.reg[this.y];
+		this.reg[this.x] = val;
 	}
 
 	Opcode8XY5() { //8XY5 - Set Reg X = Reg X - Reg Y with Carry
@@ -390,6 +398,10 @@ class Chip8 {
 		}
 
 		this.reg[this.x] -= this.reg[this.y];
+
+		if (this.reg[this.x] < 0) {
+			this.reg[this.x] += 256;
+		}
 	}
 
 	Opcode8XY6() { //8XY6 - Divide Reg X by 2 with Carry on LSB = 1
@@ -405,11 +417,19 @@ class Chip8 {
 		}
 
 		this.reg[this.x] = (this.reg[this.y] - this.reg[this.x]);
+
+		if (this.reg[this.x] < 0) {
+			this.reg[this.x] += 256;
+		}
 	}
 
 	Opcode8XYE() { //8XYE - Multiply Reg X by 2 with Carry on MSB = 1
-		this.reg[0xF] = (this.reg[this.x] >> 7);
+		this.reg[0xF] = (this.reg[this.x] & 0x80);
 		this.reg[this.x] <<= 1;
+
+		if (this.reg[this.x] > 255) {
+			this.reg[this.x] -= 256
+		}
 	}
 
 	Opcode9XY0() { //9XY0 - Skip Next Instruction if Reg X != Reg Y

@@ -73,7 +73,7 @@ class Chip8 {
 	}
 
 	unsetKey(key) {
-		
+
 	}
 
 	getKeyPressed() {
@@ -545,13 +545,13 @@ class Chip8 {
 	}
 
 	OpcodeFX55() { //FX55 - Stores Registers From Reg 0 to Reg X into Memory starting at Addr Reg
-		for(var i = 0; i < this.x; i++) {
+		for(var i = 0; i <= this.x; i++) {
 			this.memory[this.counters[2] + i] = this.reg[i];
 		}
 	}
 
 	OpcodeFX65() { //FX65 - Reads Registers From Reg 0 to Reg X from Memory starting at Addr Reg
-		for(var i = 0; i < this.x; i++) {
+		for(var i = 0; i <= this.x; i++) {
 			this.reg[i] = this.memory[this.counters[2] + i];
 		}
 	}

@@ -9,7 +9,7 @@ class CanvasRenderer {
 		this.modWidth = this.width * this.size;
 		this.modHeight = this.height * this.size;
 
-		this.colours = ['transparent', '#00f']; //BG, FG
+		this.colours = ['#000', '#fff']; //BG, FG
 
 		this.frames = 0;
 		this.lastFPSCheck = 0;

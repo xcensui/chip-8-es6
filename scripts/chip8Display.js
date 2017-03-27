@@ -9,6 +9,10 @@ class Chip8Display {
 	clearScreen() {
 		console.log('Chip 8 Display clear');
 		this.display = new Uint8Array(new ArrayBuffer(this.width*this.height));
+
+		for (var i = 0; i < this.display.length; i++) {
+			this.display[i] = 0;
+		}
 	}
 
 	getScreen() {
@@ -32,8 +36,8 @@ class Chip8Display {
 
 		var location = x + (y * this.width);
 
-		this.display[location] ^= 1
+		this.display[location] ^= 1;
 
-		return !this.display[location]
+		return !this.display[location];
 	}
 }

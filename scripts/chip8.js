@@ -68,6 +68,14 @@ class Chip8 {
 		this.counters[3] = 0;		//Timer
 	}
 
+	setKey(key) {
+
+	}
+
+	unsetKey(key) {
+		
+	}
+
 	getKeyPressed() {
 		var key = null;
 

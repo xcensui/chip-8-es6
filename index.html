@@ -27,6 +27,14 @@
     		render.clear();
     		var chip8 = new Chip8(render);
 
+    		document.addEventListener('keydown', function(event) {
+    			chip8.setKey(event.keyCode);
+    		};
+
+    		document.addEventListener('keydown', function(event) {
+    			chip8.unsetKey(event.keyCode);
+    		};
+
     		start.onclick = function() {
     			var xhr = new XMLHttpRequest;
     			xhr.open('get', 'roms/tetris', true);

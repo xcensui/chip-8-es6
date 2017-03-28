@@ -485,13 +485,13 @@ class Chip8 {
 		this.frameChanged = true;
 	}
 
-	OpcodeEXA1() { //EXA1 - Skips Next Instruction if Key in Reg X is Pressed
+	OpcodeEX9E() { //EX9E - Skips Next Instruction if Key in Reg X is Pressed
 		if (this.keyState[this.reg[this.x]] == 1) {
 			this.counters[1] += 2;
 		}
 	}
 
-	OpcodeEX9E() { //EX9E - Skips Next Instruction if Key in Reg X is Not Pressed
+	OpcodeEXA1() { //EXA1 - Skips Next Instruction if Key in Reg X is Not Pressed
 		if (this.keyState[this.reg[this.x]] == 0) {
 			this.counters[1] += 2;
 		}

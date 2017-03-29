@@ -17,10 +17,16 @@ class Chip8Sound {
 
 	reset() {
 		console.log('Chip 8 Sound reset');
+		this.context = new (window.AudioContext || window.webkitAudioContext)();
 		this.timer = new Uint16Array(1);
 	}
 
 	playSound() {
-		console.warn('Sound playing...Well not yet, no implementation. :D')
+		var osc = this.context.createOscillator();
+		osc.connect(this.context.destination);
+		osc.type = 'sine';
+		osc.frequency.value = 440;
+		osc.start();
+		osc.stop(this.context.currentTime + 0.1);
 	}
 }

@@ -331,7 +331,7 @@ class Chip8 {
 	}
 
 	Opcode1NNN() { //1NNN - Jump To
-		this.counters[1] = (this.counters[0] & 0x0FFF);
+		this.counters[1] = (this.nnn);
 	}
 
 	Opcode2NNN() { //2NNN Save Position and Jump To
@@ -340,7 +340,7 @@ class Chip8 {
 	}
 
 	Opcode3XNN() { //3XNN - Skip Next Instruction if Reg X = NN
-		if (this.reg[this.x] === this.nn) {
+		if (this.reg[this.x] == this.nn) {
 			this.counters[1] += 2;
 		}
 	}
@@ -352,7 +352,7 @@ class Chip8 {
 	}
 
 	Opcode5XY0() { //5XY0 - Skip Next Instruction if Reg X = Reg Y
-		if (this.reg[this.x] === this.reg[this.y]) {
+		if (this.reg[this.x] == this.reg[this.y]) {
 			this.counters[1] += 2;
 		}
 	}
@@ -527,7 +527,7 @@ class Chip8 {
 			this.reg[0xF] = 1;
 		}
 
-		this.counters[2] = this.reg[this.x];
+		this.counters[2] = ((this.counters[2] + this.reg[this.x]) % 0xF000);
 	}
 
 	OpcodeFX29() { //FX29 - Sets Addr Reg = Location of Font in Reg X

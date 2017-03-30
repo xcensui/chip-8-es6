@@ -3,6 +3,12 @@ class Chip8 {
 	constructor(renderer) {
 		this.perFrame = Math.floor(400 / 60); //400 opcodes per second at 60Hz
 		this.renderer = renderer;
+		this.keys = [
+			49 : 0x1, 50 : 0x2, 51 : 0x3, 52 : 0x4,
+			81 : 0x5, 87 : 0x6, 69 : 0x7, 82 : 0x8,
+			65 : 0x9, 83 : 0xA, 68 : 0xB, 70 : 0xC,
+			90 : 0xD, 88 : 0xE, 67 : 0xF, 86 : 0x10
+		];
 		this.reset(); //Because why would anyone want properties defined in their class right ES6 people?!
 	}
 
@@ -69,15 +75,21 @@ class Chip8 {
 	}
 
 	setKey(key) {
-
+		this.keyState[this.keys[key]] = 1;
 	}
 
 	unsetKey(key) {
-
+		this.keyState[this.keys[key]] = 0;
 	}
 
 	getKeyPressed() {
 		var key = null;
+
+		for (var i = 0; i < this.keyState.length; i++) {
+			if (this.keyState[i] > 0) {
+				return i;
+			}
+		}
 
 		return key;
 	}

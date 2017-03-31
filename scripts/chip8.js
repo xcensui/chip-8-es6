@@ -1,7 +1,8 @@
 class Chip8 {
-
-	constructor(renderer) {
+	constructor(width, height, renderer) {
 		this.perFrame = Math.floor(400 / 60); //400 opcodes per second at 60Hz
+		this.width = width;
+		this.height = height;
 		this.renderer = renderer;
 		this.keys = {
 			49 : 0x1, 50 : 0x2, 51 : 0x3, 52 : 0x4,
@@ -12,22 +13,6 @@ class Chip8 {
 		this.reset(); //Because why would anyone want properties defined in their class right ES6 people?!
 
 		renderer.setWidthHeight(this.width, this.height);
-	}
-
-	get height() {
-		return this.height;
-	}
-
-	set height(newHeight) {
-		this.height = newHeight;
-	}
-
-	get height() {
-		return this.width;
-	}
-
-	set width(newWidth) {
-		this.width = newWidth;
 	}
 
 	getOpcode() {
@@ -82,6 +67,7 @@ class Chip8 {
 		this.sound = new Chip8Sound();
 		this.display = new Chip8Display();
 		this.running = false;
+		this.renderer.reset(this.width, this.height);
 		var font = this.systemFont();
 
 		for (var i = 0; i < font.length; i++) {

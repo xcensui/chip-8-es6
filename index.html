@@ -23,15 +23,14 @@
     	window.onload = function() {
     		var canvas = document.querySelector('canvas');
     		var start = document.querySelector('#start');
-    		var render = new CanvasRenderer(canvas, 8);
-    		render.clear();
-    		var chip8 = new Chip8(render);
+    		var render = new CanvasRenderer(canvas, 8, 64, 32);
+    		var chip8 = new Chip8(64, 32, render);
 
     		document.addEventListener('keydown', function(event) {
     			chip8.setKey(event.keyCode);
     		});
 
-    		document.addEventListener('keydown', function(event) {
+    		document.addEventListener('keyup', function(event) {
     			chip8.unsetKey(event.keyCode);
     		});
 

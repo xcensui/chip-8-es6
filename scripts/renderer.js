@@ -1,17 +1,17 @@
 class CanvasRenderer {
-	constructor(canvas, size) {
+	constructor(canvas, size, width, height) {
 		this.context = canvas.getContext('2d');
 		this.canvas = canvas;
-		this.width = 64;
-		this.height = 32;
 		this.size = size;
 
-		this.setCanvasSize();
-
+		this.reset(width, height);
 		this.colours = ['#000', '#fff']; //BG, FG
+	}
 
-		this.frames = 0;
+	reset(width, height) {
 		this.lastFPSCheck = 0;
+		this.frames = 0;
+		this.setWidthHeight(width, height);
 	}
 
 	clear() {
@@ -25,8 +25,8 @@ class CanvasRenderer {
 	}
 
 	setCanvasSize() {
-		this.canvas.width = (this.width * size);
-		this.canvas.height = (this.height * size);
+		this.canvas.width = (this.width * this.size);
+		this.canvas.height = (this.height * this.size);
 		this.clear();
 	}
 

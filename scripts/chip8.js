@@ -10,6 +10,24 @@ class Chip8 {
 			90 : 0xD, 88 : 0xE, 67 : 0xF, 86 : 0x10
 		};
 		this.reset(); //Because why would anyone want properties defined in their class right ES6 people?!
+
+		renderer.setWidthHeight(this.width, this.height);
+	}
+
+	get height() {
+		return this.height;
+	}
+
+	set height(newHeight) {
+		this.height = newHeight;
+	}
+
+	get height() {
+		return this.width;
+	}
+
+	set width(newWidth) {
+		this.width = newWidth;
 	}
 
 	getOpcode() {
@@ -40,6 +58,8 @@ class Chip8 {
 
 	load(program) {
 		console.log('Loading ROM');
+
+		this.reset();
 
 		for (var i = 0; i < program.length; i++) {
 			this.memory[i + 0x200] = program[i];

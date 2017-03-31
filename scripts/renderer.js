@@ -6,11 +6,7 @@ class CanvasRenderer {
 		this.height = 32;
 		this.size = size;
 
-		this.modWidth = this.width * this.size;
-		this.modHeight = this.height * this.size;
-
-		this.canvas.width = this.modWidth;
-		this.canvas.height = this.modHeight;
+		this.setCanvasSize();
 
 		this.colours = ['#000', '#fff']; //BG, FG
 
@@ -19,7 +15,19 @@ class CanvasRenderer {
 	}
 
 	clear() {
-		this.context.clearRect(0, 0, this.modWidth, this.modHeight);
+		this.context.clearRect(0, 0, (this.width * this.size), this.height * this.size);
+	}
+
+	setWidthHeight(width, height) {
+		this.width = width;
+		this.height = height;
+		this.setCanvasSize();
+	}
+
+	setCanvasSize() {
+		this.canvas.width = (this.width * size);
+		this.canvas.height = (this.height * size);
+		this.clear();
 	}
 
 	frame(screen) {

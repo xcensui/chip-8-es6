@@ -125,6 +125,13 @@ class Chip8 {
 		this.counters[0] = this.getOpcode();
 		this.counters[1] += 2;
 
+		this.o = (this.counters[0] & 0xF000);
+		this.x = (this.counters[0] & 0x0F00) >> 8;
+		this.y = (this.counters[0] & 0x00F0) >> 4;
+		this.n = (this.counters[0] & 0x000F);
+		this.nn = (this.counters[0] & 0x00FF);
+		this.nnn = (this.counters[0] & 0x0FFF);
+
 		this.handleOpcode();
 	}
 
@@ -142,13 +149,6 @@ class Chip8 {
 	}
 
 	handleOpcode() {
-		this.o = (this.counters[0] & 0xF000);
-		this.x = (this.counters[0] & 0x0F00) >> 8;
-		this.y = (this.counters[0] & 0x00F0) >> 4;
-		this.n = (this.counters[0] & 0x000F);
-		this.nn = (this.counters[0] & 0x00FF);
-		this.nnn = (this.counters[0] & 0x0FFF);
-
 		switch(this.o) {
 			case 0x0000:
 				console.log('Opcode0');

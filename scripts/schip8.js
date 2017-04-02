@@ -26,25 +26,27 @@ class SuperChip8 extends Chip8 {
 	handleOpcode0() {
 		switch(this.nn) {
 			case 0x00FB:
-				this.opcode00FB();
+				this.Opcode00FB();
 				break;
 			case 0x00FC:
-				this.opcode00FC();
+				this.Opcode00FC();
 				break;
 			case 0x00FD:
-				this.opcode00FD();
+				this.Opcode00FD();
 				break;
 			case 0x00FE:
-				this.opcode00FE();
+				this.Opcode00FE();
 				break;
 			case 0x00FF:
-				this.opcode00FF();
+				this.Opcode00FF();
 				break;
 			default:
 				if ((this.nn >> 4) == 0x00C) {
-					this.opcode00CN();
+					this.Opcode00CN();
 				}
-				super();
+				else {
+					super();
+				}
 				break;
 		}
 	}
@@ -52,13 +54,13 @@ class SuperChip8 extends Chip8 {
 	handleOpcodeF() {
 		switch(this.nn) {
 			case 0x0030:
-				this.opcodeFX30();
+				this.OpcodeFX30();
 				break;
 			case 0x0075:
-				this.opcodeFX75();
+				this.OpcodeFX75();
 				break;
 			case 0x0085:
-				this.opcodeFX85();
+				this.OpcodeFX85();
 				break;
 			default:
 				super();
@@ -66,39 +68,43 @@ class SuperChip8 extends Chip8 {
 		}		
 	}
 
-	opcode00CN() {
+	Opcode00CN() {
 
 	}
 
-	opcode00FB() {
+	Opcode00FB() {
 		
 	}
 
-	opcode00FC() {
+	Opcode00FC() {
 		
 	}
 
-	opcode00FD() {
+	Opcode00FD() {
 		
 	}
 
-	opcode00FE() {
+	Opcode00FE() {
 		
 	}
 
-	opcode00FF() {
+	Opcode00FF() {
 		
 	}
 
-	opcodeFX30() {
+	OpcodeFX30() {
 
 	}
 
-	opcodeFX75() {
-
+	OpcodeFX75() { //FX75 Stores Reg 0 to Reg X into HP48 0 to HP48 X
+		for (var i = 0; i <= this.x; i++) {
+			this.hp48[i] = this.reg[i];
+		}
 	}
 
-	opcodeFX85() {
-
+	OpcodeFX85() { //FX85 Stores HP48 0 to HP48 X in Reg 0 to Reg X
+		for (var i = 0; i <= this.x; i++) {
+			this.reg[i] = this.hp48[i];
+		}
 	}
 }

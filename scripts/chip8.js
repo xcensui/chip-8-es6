@@ -450,7 +450,7 @@ class Chip8 {
 	}
 
 	Opcode8XYE() { //8XYE - Multiply Reg X by 2 with Carry on MSB = 1
-		this.reg[0xF] = (this.reg[this.x] & 0x80);
+		this.reg[0xF] = (this.reg[this.x] >> 7);
 		this.reg[this.x] <<= 1;
 
 		if (this.reg[this.x] > 255) {

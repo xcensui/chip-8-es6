@@ -7,6 +7,7 @@
 	<script src="./scripts/chip8Display.js"></script>
 	<script src="./scripts/chip8Sound.js"></script>
 	<script src="./scripts/chip8.js"></script>
+	<script src="./scripts/schip8.js"></script>
 </head>
     
 <body>
@@ -24,7 +25,7 @@
     		var canvas = document.querySelector('canvas');
     		var start = document.querySelector('#start');
     		var render = new CanvasRenderer(canvas, 8, 64, 32);
-    		var chip8 = new Chip8(64, 32, render);
+    		var chip8 = new SuperChip8(64, 32, render);
 
     		document.addEventListener('keydown', function(event) {
     			chip8.setKey(event.keyCode);
@@ -36,7 +37,7 @@
 
     		start.onclick = function() {
     			var xhr = new XMLHttpRequest;
-    			xhr.open('get', 'roms/breakout', true);
+    			xhr.open('get', 'roms/sctest', true);
 	    		xhr.responseType = 'arraybuffer';
 
 	    		xhr.onload = function() {

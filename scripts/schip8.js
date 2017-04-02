@@ -4,7 +4,7 @@ class SuperChip8 extends Chip8 {
 	}
 
 	reset() {
-		this.hp48 = new Uint8Array(new ArrayBuffer(0x7));
+		this.hp48 = new Uint8Array(new ArrayBuffer(0x10));
 		this.extended = false;
 		super.reset();
 	}

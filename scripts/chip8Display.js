@@ -7,7 +7,6 @@ class Chip8Display {
 	}
 
 	clearScreen() {
-		console.log('Chip 8 Display clear');
 		this.display = new Uint8Array(new ArrayBuffer(this.width*this.height));
 
 		for (var i = 0; i < this.display.length; i++) {

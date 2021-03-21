@@ -5,7 +5,6 @@ class Chip8Sound {
 
 	handleTimers() {
 		if (this.timer[0] > 0) {
-			console.log('Sound Timer');
 			this.playSound();
 			this.timer[0]--;
 		}
@@ -16,7 +15,6 @@ class Chip8Sound {
 	}
 
 	reset() {
-		console.log('Chip 8 Sound reset');
 		this.context = new (window.AudioContext || window.webkitAudioContext)();
 		this.timer = new Uint16Array(1);
 	}
